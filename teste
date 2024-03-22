@@ -1,0 +1,65 @@
+create table livro (
+isbn varchar(13) primary key, 
+nome varchar(100) not null, 
+autor varchar(50) not null, 
+editora varchar(50)
+);
+
+create table exemplar (
+id_livro int primary key AUTO_INCREMENT, 
+isbn varchar(13),
+situacao_exemplar bool not null,
+FOREIGN KEY (isbn) REFERENCES livro (isbn)
+);
+
+drop table livro;
+
+create table usuario (
+cpf varchar(11) primary key, 
+nome varchar(100) not null
+);
+
+create table emprestimo (
+id_emprestimo int auto_increment primary key,
+id_livro int not null,
+cpf varchar(11) not null,
+data_emprestimo datetime,
+data_prevista_retorno datetime,
+FOREIGN KEY (id_livro) REFERENCES exemplar (id_livro),
+FOREIGN KEY (cpf) REFERENCES usuario (cpf)
+);
+
+create table devolucao (
+id_emprestimo int primary key,
+data_devolucao datetime,
+FOREIGN KEY (id_emprestimo) REFERENCES emprestimo (id_emprestimo)
+);
+
+
+drop table emprestimo;
+
+SHOW COLUMNS FROM devolucao;
+
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'biblioteca';
+
+
+SHOW TABLES;
+
+SELECT COLUMN_TYPE  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'biblioteca' AND TABLE_NAME = 'devolucao';
+
+SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'biblioteca' AND TABLE_NAME = 'devolucao';
+
+CREATE database biblioteca;
+use biblioteca;
+
+
+create procedure if not exists devolucao_insere(
+out p_id_emprestimo int,
+in p_data_devolucao datetime
+)
+begin
+insert into devolucao
+(data_devolucao)
+values
+(p_data_devolucao);
+SELECT LAST_INSERT_ID() into p_id_emprestimo;
