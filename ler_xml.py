@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import mysql.connector
 import mariadb
+import gerador_de_codigo as gerador
 
 
 def connect_to_mariadb():
@@ -15,7 +16,7 @@ def connect_to_mysql():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="root",
+        password="1234",
         # O nome do banco de dados precisa ser livraria
         database="livraria"
     )
@@ -50,10 +51,8 @@ def ler_xml(arquivo):
 
 def criar_tabela(nome_tabela, lista_chaves, lista_atributos, cursor):
 
-    print(lista_atributos)
-
     # Compondo a string SQL da stored procedure de INSERT
-    sql = f"CREATE TABLE {nome_tabela}(\n"
+    sql = f"CREATE TABLE IF NOT EXISTS {nome_tabela}(\n"
     for atributos in lista_atributos:
         nome = atributos.get('nome')
         tamanho = atributos.get('tamanho')
@@ -66,10 +65,12 @@ def criar_tabela(nome_tabela, lista_chaves, lista_atributos, cursor):
         if null == 'nao':
             null = ' not'
         else:
-            null = ''            
+            null = ''         
+        if nome in lista_chaves:
+            null = ' not'   
 
         sql += f"{nome} {tipo}{null} null, "
-    print(lista_chaves)
+        
     sql += f"PRIMARY KEY ("
     for chaves in lista_chaves:
         sql += f"{chaves}, "
@@ -77,7 +78,7 @@ def criar_tabela(nome_tabela, lista_chaves, lista_atributos, cursor):
         
     cursor.execute(sql)
     
-    return
+    return 
     
 
 def main():
@@ -103,6 +104,8 @@ def main():
     
     cursor.close()
     db_connection.close()
+    gerador.main(nome, banco)
+    
     
 
 if __name__ == "__main__":
