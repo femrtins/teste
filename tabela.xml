@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tabela nome="aluno">
+	<colunas>
+		<coluna nome="id" tipo="int" null="nao"></coluna>
+		<coluna nome="nome" tipo="string" tamanho="100"></coluna>
+	</colunas>
+	<chaveprimaria>
+		<colunas>
+			<coluna>id</coluna>
+		</colunas>
+	</chaveprimaria>
+</tabela>
+
